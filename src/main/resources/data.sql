@@ -1,0 +1,10 @@
+--insert into searchpath values (1,'/Users/jottley',true,false);
+insert into searchpath values (2, '/Users/jottley/Applications', true, true);
+insert into searchpath values (3, '/Users/jottley/Library', true, true);
+insert into searchpath values (4, '/Users/jottley/GitHub', true, true);
+insert into searchpath values (5, '/Users/jottley/Movies', true, true);
+insert into searchpath values (6, '/Users/jottley/Pictures', true, true);
+insert into searchpath values (7, '/Users/jottley/Music', true, true);
+--insert into searchpath values (1,'/Users/jottley/tmp11',true,false);
+insert into searchpath values (1,'/Users/jottley/Downloads',true,false);
+--insert into content values (1, 'canvas_it.properties', 'Users/jottley/tmp11/alfresco-content-connector-for-salesforce/alfresco-content-connector-for-salesforce-share/target/test-classes/alfresco/messages/canvas_it.properties', 'test', TIMESTAMP('2020-12-30 13:08:54.193'), TIMESTAMP('2020-12-30 13:08:54.193'));
