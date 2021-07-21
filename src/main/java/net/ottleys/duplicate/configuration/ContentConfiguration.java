@@ -17,5 +17,8 @@ public class ContentConfiguration {
         //return MessageDigest.getInstance("SHA3-256");
         return MessageDigest.getInstance("MD5");
     }
+
+    //@Bean
+    //@Scope(ConfigurableBeanFactory.)
     
 }
