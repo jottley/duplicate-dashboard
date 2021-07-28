@@ -12,13 +12,9 @@ import org.springframework.context.annotation.Scope;
 public class ContentConfiguration {
 
     @Bean
-    @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
+    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public MessageDigest methodDigest() throws NoSuchAlgorithmException {
-        //return MessageDigest.getInstance("SHA3-256");
-        return MessageDigest.getInstance("MD5");
+        return MessageDigest.getInstance("SHA3-256");
     }
-
-    //@Bean
-    //@Scope(ConfigurableBeanFactory.)
     
 }

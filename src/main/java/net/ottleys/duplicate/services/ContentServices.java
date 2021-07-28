@@ -16,6 +16,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.bind.DatatypeConverter;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,26 +40,25 @@ public class ContentServices {
     @Autowired
     private MessageDigest messageDigest;
 
+
     public void generateChecksum(ContentEntity content) {
 
+        log.info("File: " + content.getName());
         try (InputStream inputStream = Files.newInputStream(Paths.get(content.getPath()))) {
-             DigestInputStream digestInputStream = new DigestInputStream(inputStream, messageDigest);
 
-            while (digestInputStream.read() != -1) ; //empty loop to clear the data
-            messageDigest = digestInputStream.getMessageDigest();
+            DigestInputStream digestInputStream = new DigestInputStream(inputStream, messageDigest);
+            byte[] buffer = new byte[1024 * 8];
+            while (digestInputStream.read(buffer) != -1);
+            digestInputStream.close();
 
-            byte[] bytes = messageDigest.digest();
+            content.setChecksum(DatatypeConverter.printHexBinary(messageDigest.digest()).toLowerCase());
+            messageDigest.reset();
 
-            StringBuilder stringBuilder = new StringBuilder();
-            for (byte b : bytes) {
-                stringBuilder.append(String.format("%02x", b));
-            }
-
-            content.setChecksum(stringBuilder.toString());
+  
             log.debug(content.getName() + " Checksum: " + content.getChecksum());
-
         } catch (IOException e) {
-            throw new IllegalArgumentException(e);
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
     }
 
@@ -76,19 +77,13 @@ public class ContentServices {
 
         for (Path path : indexedPaths) {
             ContentEntity contentEntity = buildContentEntity(path);
-            //log.debug("Content to be saved: " + contentEntity);
-            if (contentEntity.getName().length() > 255) {
-                log.debug("Name length: " + contentEntity.getName().length());
-            }
-
-            if (contentEntity.getPath().length() > 255) {
-                log.debug("Path length: " + contentEntity.getPath().length());
-            }
-            //log.debug("Name length: " + contentEntity.getName().length() + " ***** Path length: " + contentEntity.getPath().length());
+            log.debug("Content to be saved: " + contentEntity);
             contentList.add(contentEntity);
         }
 
         contentRepository.saveAll(contentList);
+
+        indexedPaths = Collections.synchronizedList(new LinkedList<>());
     }
 
     public void saveContentEntities(List<ContentEntity> contentEntityList) {
@@ -98,8 +93,6 @@ public class ContentServices {
 
     private ContentEntity buildContentEntity(Path path) {
         ContentEntity contentEntity = new ContentEntity(path.getFileName().toString(), path.normalize().toString());
-
-        contentEntity.setChecksum("checksum");
 
         Map<String, Object> fileAttributes = getAttributes(path);
 
@@ -152,5 +145,14 @@ public class ContentServices {
 
         return contentList;
     }
+
+    public void save(List<ContentEntity> contentEntities) {
+        contentRepository.saveAll(contentEntities);
+    }
+
+    public void save(ContentEntity contentEntity) {
+        contentRepository.save(contentEntity);
+    }
+
 
 }

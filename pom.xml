@@ -81,7 +81,7 @@
                     <executable>true</executable>
                     <jvmArguments>
                         -Xms256m
-                        -Xmx1g
+                        -Xmx6g
                     </jvmArguments>
 					<excludes>
 						<exclude>
